@@ -24,14 +24,19 @@ jobs:
       - name: Run evolution script
         run: python3 evolve.py
 
+      - name: Read Summary
+        id: summary
+        run: |
+          echo "BODY=$(cat summary.txt)" >> $GITHUB_OUTPUT
+
       - name: Create Pull Request
         if: success()
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "Evolve Langton's Ant - Step ${{ github.run_number }}"
+          commit_message: "Evolve Langton's Ant - Step ${{ github.run_number }}"
           branch: "evolution/ant-path"
           title: "Ant Movement Proposal: Step ${{ github.run_number }}"
-          body: "This PR logs the latest path taken by the ant across the filesystem grid."
+          body: ${{ steps.summary.outputs.BODY }}
           delete-branch: true
 
       - name: Report Failure

@@ -92,5 +92,17 @@ def evolve(steps_to_take=200):
     with open(log_path, 'a') as f:
         f.write(f"| {state['steps']} | {date_str} |\n```\n{ascii_snapshot}\n``` |\n")
 
+    # Generate human summary
+    black_cells = len(grid)
+    summary = f"The ant has completed another {steps_to_take} steps, reaching a total of {state['steps']} steps. "
+    summary += f"There are currently {black_cells} black tiles on the grid. "
+    if state['steps'] > 10000:
+        summary += "The ant has entered the 'highway' phase, building a repeating diagonal structure that stretches into infinity."
+    else:
+        summary += "The ant is currently in its 'chaotic' phase, exploring local space and flipping tiles in a seemingly random dance."
+
+    with open(os.path.join(base_dir, 'summary.txt'), 'w') as f:
+        f.write(summary)
+
 if __name__ == "__main__":
     evolve()
