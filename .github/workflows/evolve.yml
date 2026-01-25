@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,8 +24,24 @@ jobs:
       - name: Run evolution script
         run: python3 evolve.py
 
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Create Pull Request
+        if: success()
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: "Evolve Langton's Ant - Step ${{ github.run_number }}"
-          file_pattern: 'state.json ant-log.md grid/*'
+          commit-message: "Evolve Langton's Ant - Step ${{ github.run_number }}"
+          branch: "evolution/ant-path"
+          title: "Ant Movement Proposal: Step ${{ github.run_number }}"
+          body: "This PR logs the latest path taken by the ant across the filesystem grid."
+          delete-branch: true
+
+      - name: Report Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Incident: Evolution Halted',
+              body: 'The daily evolution script for Langton\'s Ant failed. Please check the [Actions log](' + context.payload.repository.html_url + '/actions/runs/' + context.runId + ') for details.'
+            })
