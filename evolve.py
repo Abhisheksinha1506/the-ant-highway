@@ -125,6 +125,8 @@ def evolve(steps_to_take=200):
 
 
 def update_readme(summary):
+    from pathlib import Path
+    from datetime import datetime
     readme_path = Path("README.md")
     if not readme_path.exists(): return
     try:
@@ -137,9 +139,9 @@ def update_readme(summary):
         prefix = parts[0] + start
         suffix = end + suffix_parts[1]
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-        new_inner = f"
+        new_inner = f"""
 *{summary} ({timestamp})*
-"
+"""
         readme_path.write_text(prefix + new_inner + suffix)
     except Exception as e: print(f"⚠️ README Update Failed: {e}")
 if __name__ == "__main__":
