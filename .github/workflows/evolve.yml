@@ -29,24 +29,8 @@ jobs:
         run: |
           echo "BODY=$(cat summary.txt)" >> $GITHUB_OUTPUT
 
-      - name: Create Pull Request
-        if: success()
-        uses: peter-evans/create-pull-request@v6
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Evolve Langton's Ant - Step ${{ github.run_number }}"
-          branch: "evolution/ant-path"
-          title: "Ant Movement Proposal: Step ${{ github.run_number }}"
-          body: ${{ steps.summary.outputs.BODY }}
-          delete-branch: true
-
-      - name: Report Failure
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🚨 Incident: Evolution Halted',
-              body: 'The daily evolution script for Langton\'s Ant failed. Please check the [Actions log](' + context.payload.repository.html_url + '/actions/runs/' + context.runId + ') for details.'
-            })
+          commit_message: "Evolution Update [skip ci]"
+          branch: main
