@@ -2,7 +2,7 @@ name: Evolve Langton's Ant
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Run every 6 hours
+    - cron: '30 */6 * * *' # Run every 6 hours (IST: 00, 06, 12, 18)
   workflow_dispatch:
 
 jobs:
