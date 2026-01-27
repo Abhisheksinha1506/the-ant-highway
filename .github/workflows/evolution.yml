@@ -1,5 +1,5 @@
 
-concurrency: langtons-ant-evolution
+concurrency: evolution-${{ github.workflow }}
 
 name: Daily Evolution
 
